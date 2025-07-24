@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1" />
+    <title>Vault</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Enable dark mode using class strategy
+      tailwind.config = {
+        darkMode: "class",
+      };
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body
+    class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-300"
+  >
+    <!-- Header -->
+    <header
+      class="flex flex-col sm:flex-row items-center justify-between bg-white dark:bg-gray-800 shadow px-6 py-4"
+    >
+      <h1
+        class="text-3xl font-extrabold tracking-tight text-blue-600 dark:text-blue-400"
+      >
+        🔐 Vault
+      </h1>
+      <div class="mt-4 sm:mt-0 flex items-center gap-4">
+        <button
+          id="toggleForm"
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300"
+        >
+          <i class="fa fa-plus mr-1"></i> Add New
+        </button>
+        <button
+          id="toggleTheme"
+          class="px-3 py-2 border rounded border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+        >
+          🌓 Toggle Theme
+        </button>
+        <form action="/logout" method="POST">
+          <button
+            type="submit"
+            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300"
+          >
+            <i class="fa fa-sign-out-alt mr-1"></i> Logout
+          </button>
+        </form>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main class="p-4 flex-1">
+      <ul class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <% if (items && items.length > 0) { %> <% items.forEach(item => { %>
+        <li
+          class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 hover:shadow-lg transition"
+        >
+          <div
+            class="flex justify-between text-xs text-gray-400 dark:text-gray-500 mb-2"
+          >
+            <span>🕒 Updated: <%= item.updatedAT %></span>
+            <span>🗓 Created: <%= item.createdAT %></span>
+          </div>
+
+          <div class="space-y-3">
+            <% const fields = ['service', 'username', 'password', 'note']; %> <%
+            fields.forEach(field => { %>
+            <div class="flex items-center justify-between">
+              <span
+                class="font-semibold capitalize text-gray-700 dark:text-gray-200"
+                ><%= field %>:</span
+              >
+              <span class="text-sm max-w-[140px] truncate"
+                ><%= item[field] %></span
+              >
+              <button
+                class="copy-btn text-blue-500 hover:text-blue-700"
+                data-text="<%= item[field] %>"
+              >
+                <i class="fa fa-copy"></i>
+              </button>
+            </div>
+            <% }) %>
+          </div>
+
+          <div class="flex justify-end gap-3 mt-4 text-sm">
+            <button class="text-green-600 hover:text-green-800">
+              <i class="fa fa-eye"></i>
+            </button>
+            <button class="text-yellow-600 hover:text-yellow-800">
+              <i class="fa fa-edit"></i>
+            </button>
+            <button class="text-red-600 hover:text-red-800">
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
+        </li>
+        <% }) %> <% } else { %>
+        <li class="text-center text-gray-500 col-span-full">
+          🔒 No vault entries found.
+        </li>
+        <% } %>
+      </ul>
+    </main>
+
+    <!-- Form Modal -->
+    <div
+      id="vaultForm"
+      class="fixed inset-0 hidden bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 transition-all"
+    >
+      <div
+        class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-11/12 max-w-md relative animate-fade-in"
+      >
+        <button
+          id="closeForm"
+          class="absolute top-3 right-3 text-gray-400 hover:text-gray-700 dark:hover:text-white transition"
+        >
+          <i class="fa fa-close fa-lg"></i>
+        </button>
+        <form action="/vault/add" method="POST" class="space-y-4">
+          <input
+            type="text"
+            name="service"
+            placeholder="Service (e.g., Gmail)"
+            required
+            class="w-full border border-gray-300 dark:border-gray-600 bg-transparent p-2 rounded focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            required
+            class="w-full border border-gray-300 dark:border-gray-600 bg-transparent p-2 rounded focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="text"
+            name="password"
+            placeholder="Password"
+            required
+            class="w-full border border-gray-300 dark:border-gray-600 bg-transparent p-2 rounded focus:ring-2 focus:ring-blue-500"
+          />
+          <textarea
+            name="note"
+            placeholder="Note or Description"
+            required
+            class="w-full border border-gray-300 dark:border-gray-600 bg-transparent p-2 rounded focus:ring-2 focus:ring-blue-500"
+          ></textarea>
+          <button
+            type="submit"
+            class="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700 transition-all duration-300"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Feedback Toast -->
+    <div
+      id="copyToast"
+      class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded shadow-lg hidden transition"
+    >
+      ✅ Copied!
+    </div>
+
+    <!-- Scripts -->
+    <script>
+      const vaultForm = document.getElementById("vaultForm");
+      const toggleForm = document.getElementById("toggleForm");
+      const closeForm = document.getElementById("closeForm");
+      const copyToast = document.getElementById("copyToast");
+
+      toggleForm.onclick = () => vaultForm.classList.remove("hidden");
+      closeForm.onclick = () => vaultForm.classList.add("hidden");
+      window.addEventListener(
+        "keydown",
+        (e) => e.key === "Escape" && vaultForm.classList.add("hidden")
+      );
+
+      // Copy to clipboard with toast
+      document.querySelectorAll(".copy-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const text = btn.getAttribute("data-text");
+          navigator.clipboard.writeText(text).then(() => {
+            copyToast.classList.remove("hidden");
+            setTimeout(() => copyToast.classList.add("hidden"), 1200);
+          });
+        });
+      });
+
+      // Toggle dark mode
+      document.getElementById("toggleTheme").onclick = () => {
+        document.documentElement.classList.toggle("dark");
+      };
+    </script>
+
+    <style>
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      .animate-fade-in {
+        animation: fade-in 0.3s ease-out;
+      }
+    </style>
+  </body>
+</html>
+
+<!-- implement the delete functionality, edit fuctionalty -->

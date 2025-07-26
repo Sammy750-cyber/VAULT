@@ -17,13 +17,11 @@ authRouter.use(cookieParser());
 
 const users = [
   {
-    username: process.env.USERNAME_ || "sam",
-    email: process.env.EMAIL_TO || "user@gmail.com",
+    username: process.env.USERNAME_,
+    email: process.env.EMAIL_TO ,
     password: process.env.PASSWORD_, // hashed password
   },
 ];
-
-console.log("Users:", users); // for dev only — remove in production
 
 // OTP sessions per login request
 const otpSessions = new Map();
@@ -33,16 +31,19 @@ const vaultfile = "./data/vault.json";
 
 authRouter.get("/", verifyToken, async (req, res) => {
   const user = req.user;
-  console.log("User from token:", user); // for dev only — remove in production
+
   if (!user) {
     return res.status(403).json({ message: "Unauthorized" });
   }
 
+  const name= user.username
   let vault = JSON.parse(fs.readFileSync(vaultfile, "utf-8"));
   if (!vault || vault.length === 0) {
-    return res.status(404).json({ message: "No vault entries found" });
+    // if no vault entries are found, render the index page with an empty array
+    
+    return res.render("index", { items:[],message: `Welcome back, ${name.charAt(0).toUpperCase() + name.slice(1)}` });
+    
   }
-
   try {
     const items = await Promise.all(
       vault.map(async (entry) => ({
@@ -67,7 +68,8 @@ authRouter.get("/", verifyToken, async (req, res) => {
     });
     // why is it saying decryption error?
     // Render the index page with decrypted items
-    res.render("index", { items });
+    res.render("index", { items,message: `Welcome back, ${name.charAt(0).toUpperCase() + name.slice(1)}` });
+
   } catch (error) {
     res.status(500).json({ message: "Decryption error", error });
   }
@@ -91,8 +93,12 @@ authRouter.post("/auth/login", authLimiter, async (req, res) => {
   }
 
   const otp = await sendOTPEmail(user.email);
+  console.log(otp)
+  // handle error for otp
+
   otpSessions.set(username, { otp, timestamp: Date.now() });
-  console.log(`OTP for ${username}: ${otp}`); // for dev only — remove in production
+  // Set a cookie with the username for later verification
+  // This is for the OTP verification step
   res.cookie("username", username, {
     httpOnly: true,
     sameSite: "lax",

@@ -6,7 +6,6 @@ const vaultfile = "./data/vault.json";
 export async function save_credentials(req, res) {
   const user = req.user;
   const credentials = req.body;
-  console.log(credentials); // for dev only — remove in production
   if (!user) {
     return res.status(403).json({ message: "Unauthorized" });
   }
@@ -27,9 +26,7 @@ export async function save_credentials(req, res) {
     const vault = JSON.parse(fs.readFileSync(vaultfile, "utf-8"));
 
     const id = Date.now().toString(); // unique ID using timestamp
-    credentials.username = await encrypt(
-      credentials.username
-    );
+    credentials.username = await encrypt(credentials.username);
     credentials.password = await encrypt(credentials.password);
     credentials.note = await encrypt(credentials.note);
     credentials.service = await encrypt(credentials.service);
@@ -39,7 +36,7 @@ export async function save_credentials(req, res) {
     fs.writeFileSync(vaultfile, JSON.stringify(vault, null, 2));
 
     // render the index page with the updated vault
-    res.status(201).json({ message: "Credentials saved", data: entry });
+    res.redirect("/");
   } catch (error) {
     res.status(500).json({ message: "Server error this", error });
   }
@@ -55,8 +52,7 @@ export async function update_credentials(req, res) {
     if (index === -1)
       return res.status(404).json({ message: "Entry not found" });
 
-    if (updates.username)
-      updates.username = await encrypt(updates.username);
+    if (updates.username) updates.username = await encrypt(updates.username);
     if (updates.password) updates.password = await encrypt(updates.password);
     if (updates.note) updates.note = await encrypt(updates.note);
     if (updates.service) updates.service = await encrypt(updates.service);
@@ -65,7 +61,9 @@ export async function update_credentials(req, res) {
     vault[index] = { ...vault[index], ...updates };
     fs.writeFileSync(vaultfile, JSON.stringify(vault, null, 2));
 
-    res.status(200).json({ message: "Entry updated", data: vault[index] });
+    // render index page with messages
+    res.redirect("/");
+
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
@@ -83,7 +81,8 @@ export async function delete_credentials(req, res) {
     }
 
     fs.writeFileSync(vaultfile, JSON.stringify(filteredVault, null, 2));
-    res.status(200).json({ message: "Entry deleted" });
+    // render index page with messages
+    res.redirect("/");
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }

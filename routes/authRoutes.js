@@ -4,7 +4,7 @@ import fs from "fs";
 import { verifyToken } from "../middleware/verifyToken.js";
 import { decrypt } from "../utils/encryption.js";
 import createAccessToken from "../auth/jwtToken.js";
-import generateOTP from "../utils/generateOTP.js";
+import sendOTPEmail from "../utils/send_otp_to_mail.js";
 import bcrypt from "bcrypt";
 import authLimiter from "../middleware/rateLimiter.js";
 import cookieParser from "cookie-parser";
@@ -17,10 +17,13 @@ authRouter.use(cookieParser());
 
 const users = [
   {
-    username: "sam",
-    password: "$2b$10$DXbs6uKOCGub3uizk6dz2u7f8QjZQtiCfPtiIxdvIdEQFQXFAhm6e", // hashed password
+    username: process.env.USERNAME_ || "sam",
+    email: process.env.EMAIL_TO || "user@gmail.com",
+    password: process.env.PASSWORD_, // hashed password
   },
 ];
+
+console.log("Users:", users); // for dev only — remove in production
 
 // OTP sessions per login request
 const otpSessions = new Map();
@@ -73,7 +76,9 @@ authRouter.get("/", verifyToken, async (req, res) => {
 // login route
 authRouter.post("/auth/login", authLimiter, async (req, res) => {
   const { username, password } = req.body;
-  const user = users.find((u) => u.username === username);
+  const user = users.find(
+    (u) => u.username.toLowerCase() === username.toLowerCase()
+  );
   if (!user) {
     // render the login page with an error
     return res.render("login", { error: "Invalid credentials" });
@@ -85,7 +90,7 @@ authRouter.post("/auth/login", authLimiter, async (req, res) => {
     return res.render("login", { error: "Invalid credentials" });
   }
 
-  const otp = generateOTP();
+  const otp = await sendOTPEmail(user.email);
   otpSessions.set(username, { otp, timestamp: Date.now() });
   console.log(`OTP for ${username}: ${otp}`); // for dev only — remove in production
   res.cookie("username", username, {
@@ -104,7 +109,9 @@ authRouter.post("/auth/verify", authLimiter, async (req, res) => {
 
   if (!session) {
     // render the OTP page with an error
-    return res.render("otp", { error: "Session expired or invalid. Please try again." });
+    return res.render("otp", {
+      error: "Session expired or invalid. Please try again.",
+    });
   }
 
   if (parseInt(otp) !== parseInt(session.otp)) {

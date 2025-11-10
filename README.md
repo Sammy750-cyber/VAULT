@@ -28,8 +28,8 @@ This project is a secure vault application built with Node.js and Express. It al
 1. **Clone the repository**
 
 ```bash
-git clone <repository-url>
-cd <repository-folder>
+git clone https://github.com/Sammy750-cyber/VAULT
+cd VAULT
 ```
 
 2. **Install dependencies**

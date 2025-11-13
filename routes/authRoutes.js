@@ -33,7 +33,8 @@ authRouter.get("/", verifyToken, async (req, res) => {
   const user = req.user;
 
   if (!user) {
-    return res.status(403).json({ message: "Unauthorized" });
+    // return res.status(403).json({ message: "Unauthorized" });
+    return res.redirect("/auth/login")
   }
 
   const name= user.username
@@ -66,7 +67,7 @@ authRouter.get("/", verifyToken, async (req, res) => {
       sameSite: "lax",
       secure: false, // true in production
     });
-    // why is it saying decryption error?
+    // why is it saying decryption error? - Cookie clashing
     // Render the index page with decrypted items
     res.render("index", { items,message: `Welcome back, ${name.charAt(0).toUpperCase() + name.slice(1)}` });
 

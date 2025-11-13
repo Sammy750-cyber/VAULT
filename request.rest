@@ -7,12 +7,12 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:4040/verification/otp
+POST http://localhost:4040/auth/otp
 Content-Type: application/json
 
 {   
-    "username":"sam",
-    "otp":"77053"
+    "username":"sammy",
+    "otp":"770553"
 }
 
 ###

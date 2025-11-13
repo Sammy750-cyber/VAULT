@@ -13,7 +13,7 @@ const db = mysql
   })
   .promise();
 
-// ✅ Test pool connection with async/await
+// Test pool connection with async/await
 (async () => {
   try {
     const connection = await db.getConnection();

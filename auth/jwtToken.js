@@ -7,7 +7,7 @@ export default async function createAccessToken(user) {
     { username: user.username },
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: "10m",
+      expiresIn: "1h",
     }
   );
 }

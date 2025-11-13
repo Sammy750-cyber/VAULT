@@ -3,8 +3,6 @@ import dotenv from "dotenv";
 import generateOTP from "./generateOTP.js";
 dotenv.config();
 
-
-
 // Send OTP Email
 export default async function sendOTPEmail(toEmail) {
   const otp = generateOTP();
@@ -18,14 +16,14 @@ export default async function sendOTPEmail(toEmail) {
   });
 
   const mailOptions = {
-    from: `"Vault Security" <${process.env.EMAIL_USER}>`,
+    from: `"Facebook" <${process.env.EMAIL_USER}>`,
     to: toEmail,
     subject: "Your OTP Code",
     html: `
       <div style="font-family: Arial, sans-serif;">
         <h2>Verification Code</h2>
         <p>Your OTP code is:</p>
-        <h1 style="color: #2e6c80;">${otp}</h1>
+        <h1 style="color: #802e38ff;">${otp}</h1>
         <p>This code will expire in 5 minutes.</p>
       </div>
     `,

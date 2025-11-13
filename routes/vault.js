@@ -13,8 +13,8 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 router.use(cookieParser()); // Use cookie-parser middleware to parse cookies
 
-router.post("/vault/add", verifyToken, save_credentials);
-router.put("/vault/:id", verifyToken, update_credentials);
-router.delete("/vault/:id", verifyToken, delete_credentials);
+router.post("/add", verifyToken, save_credentials);
+router.put("/:id", verifyToken, update_credentials);
+router.delete("/:id", verifyToken, delete_credentials);
 
 export default router;

@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import vaultRouter from "./routes/vault.js";
+import router from "./routes/vault.js";
 import authRouter from "./routes/authRoutes.js";
 import path from "path";
 import cookieParser from "cookie-parser"; // For parsing cookies
@@ -25,7 +25,7 @@ app.set(
 // Vault routes
 // This will handle all vault related routes
 // It includes saving, updating, and deleting credentials
-app.use("/",vaultRouter);
+app.use("/vault",router);
 
 // Authentication routes
 // This will handle all authentication related routes

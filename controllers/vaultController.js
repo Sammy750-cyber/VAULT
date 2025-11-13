@@ -6,6 +6,7 @@ const vaultfile = "./data/vault.json";
 export async function save_credentials(req, res) {
   const user = req.user;
   const credentials = req.body;
+  console.log(credentials)
   if (!user) {
     return res.status(403).json({ message: "Unauthorized" });
   }

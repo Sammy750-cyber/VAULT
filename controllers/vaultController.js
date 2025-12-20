@@ -1,6 +1,7 @@
 import date_created from "../utils/createdAT.js";
 import fs from "fs";
 import { encrypt } from "../utils/encryption.js";
+import generateID from "../utils/generate_id.js";
 const vaultfile = "./data/vault.json";
 
 export async function save_credentials(req, res) {
@@ -13,6 +14,9 @@ export async function save_credentials(req, res) {
 
   const createdAT = date_created();
   const updatedAT = date_created();
+  const id = await generateID();  // unique ID using timestamp
+  console.log("id", id)
+
 
   if (
     !credentials?.username ||
@@ -25,8 +29,6 @@ export async function save_credentials(req, res) {
   }
   try {
     const vault = JSON.parse(fs.readFileSync(vaultfile, "utf-8"));
-
-    const id = Date.now().toString(); // unique ID using timestamp
     credentials.username = await encrypt(credentials.username);
     credentials.password = await encrypt(credentials.password);
     credentials.note = await encrypt(credentials.note);
@@ -46,6 +48,7 @@ export async function save_credentials(req, res) {
 export async function update_credentials(req, res) {
   const { id } = req.params;
   const updates = req.body;
+  console.log(updates)
 
   try {
     let vault = JSON.parse(fs.readFileSync(vaultfile, "utf-8"));

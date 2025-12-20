@@ -25,3 +25,8 @@ export async function decrypt(text) {
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   return decrypted.toString();
 }
+
+
+
+// TO DO - implement crosser user features
+//       - implement a database

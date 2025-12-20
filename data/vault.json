@@ -1,52 +1,20 @@
 [
   {
-    "id": "",
-    "createdAT": "2025-07-26 17:12:50",
-    "updatedAT": "2025-07-26 17:12:50",
-    "_method": "POST",
-    "service": "cbc632aa7621ea6cb06be456eab1a962:21fc01ab7cdba1c0122610930c5ca432",
-    "username": "00ce92d6812e82f7123ccb999bd6c942:55d142e4f3ea7d563c0cf834b7afb8b5",
-    "password": "323fab1414ecc6b6acb87ddf559031bf:8f66e0d7c6ae9fe0487fe87c84e65e4f",
-    "note": "b7ac1b4f266e99a5dacc216629e4efd3:178a009438aa6d2ca6cb24835f740a35"
+    "id": "1766265708855",
+    "createdAT": "2025-12-20 13:21:48",
+    "updatedAT": "2025-12-20 13:21:48",
+    "service": "59a2707e710598512f5fda41469651f9:b552722e7283c06418b96918b977485e",
+    "username": "ee0891ea761fb7f5eb967c196cf43cd6:5b76f06d8eaae47ce1574b8361e1f4c9",
+    "password": "eed21895a84e10dc642fb4d853237e99:d9838b27692589980b5dd6e24285bc47",
+    "note": "3cdbf9f1b6617248f065e88276d0118d:8f2f8034d7191b86747da9513642f310"
   },
   {
-    "id": "",
-    "createdAT": "2025-07-26 17:13:05",
-    "updatedAT": "2025-07-26 17:13:05",
-    "_method": "POST",
-    "service": "3c571ecbe3109aaade697bd195d00939:82e7151885138783537911dd00b50648",
-    "username": "be6ae0caeebf6bb6a7308da9a921ec31:7eab629d77e5e4ba950b7d0757bb73cc",
-    "password": "b1b2d35b948d23b4a5e722738a56a0b8:7fc88fb6da7ad2cee7527236d906207b",
-    "note": "3ddfbbc5a4357d77612b8b5cb4812510:21429b4de68a796b58097b290dfcbd42"
-  },
-  {
-    "id": "",
-    "createdAT": "2025-07-26 17:13:20",
-    "updatedAT": "2025-07-26 17:13:20",
-    "_method": "POST",
-    "service": "1db40f3f096da54f0e0919ef5c6ef5d7:d5fef61299ef1704c025e8052acff97c",
-    "username": "d2ae83f57d344118418f25c57223956f:b00dce900fe375e5ef49493c5f626f21",
-    "password": "36db639344e6ef1510712c4742194a29:0102dccd79b2e6b05e9448d9c84ef5e8",
-    "note": "cf205e365f40d532054257ad4f62555d:a3560f7f337c496336c1355437ede264"
-  },
-  {
-    "id": "",
-    "createdAT": "2025-07-30 12:24:18",
-    "updatedAT": "2025-07-30 12:24:18",
-    "_method": "POST",
-    "service": "7c6df1decedb4f8460bc014a43808aa7:6fc9a802ec7aa8108ebb92656d912bdf",
-    "username": "1437851f7505f156cc6560df160299c3:bf8022912bac3a6920489fb96883f5d3",
-    "password": "3869ec40f441a2f2b14cd80bae69e46b:e8fe2a44011383cabcddb159d47425c8",
-    "note": "ae1085c64d79cddd343b1b2ae17c3522:2ae06e7cb69bcdea0dd0b6e768a36eb6"
-  },
-  {
-    "id": "",
-    "createdAT": "2025-11-13 04:39:21",
-    "updatedAT": "2025-11-13 04:39:21",
-    "_method": "POST",
-    "service": "5b57455f103734a8dc36c3f7aaacbfe1:2c6bbece48532c4b9a3ea7a49e0376ee",
-    "username": "468f61382f807bb9366422a2c7b8d23b:c6ef41700f121f624c3dd0bbf0858f67",
-    "password": "66c152f62b23f8eab3eebd83ea369feb:349027e8487a72c3f163940c3060a99a",
-    "note": "4f91d76a315595ae33167c87ee7e9918:04861dfc7990b5ac3b7231c18444bf2a0a3e7ba30875078048816f1c13819a24"
+    "id": "1766266457256",
+    "createdAT": "2025-12-20 13:34:17",
+    "updatedAT": "2025-12-20 13:34:17",
+    "service": "100e4389fcd112f9c5bc5c044f3665e9:a11e83a0e893dd848fd78d3ff65be0dd",
+    "username": "d1d63b63486b69ed2cb59257b100fd5e:18039d394ab217e993b8fe5604c8ae7e",
+    "password": "d16fc262196f9693fd465378c24c7119:850d135bab6a4a22c0bd5def7ee609d4",
+    "note": "f0444655f06b8c8db568ae1cee9088cd:756d58bc0ffac767e76320286aabe248"
   }
 ]

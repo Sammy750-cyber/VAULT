@@ -7,31 +7,36 @@ dotenv.config();
 export default async function sendOTPEmail(toEmail) {
   const otp = generateOTP();
 
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+  /* Commented for offline testing */
+  /* ------- START -------- */
+  // const transporter = nodemailer.createTransport({
+  //   service: "gmail",
+  //   auth: {
+  //     user: process.env.EMAIL_USER,
+  //     pass: process.env.EMAIL_PASS,
+  //   },
+  // });
 
-  const mailOptions = {
-    from: `"Facebook" <${process.env.EMAIL_USER}>`,
-    to: toEmail,
-    subject: "Your OTP Code",
-    html: `
-      <div style="font-family: Arial, sans-serif;">
-        <h2>Verification Code</h2>
-        <p>Your OTP code is:</p>
-        <h1 style="color: #802e38ff;">${otp}</h1>
-        <p>This code will expire in 5 minutes.</p>
-      </div>
-    `,
-  };
+  // const mailOptions = {
+  //   from: `"Facebook" <${process.env.EMAIL_USER}>`,
+  //   to: toEmail,
+  //   subject: "Your OTP Code",
+  //   html: `
+  //     <div style="font-family: Arial, sans-serif;">
+  //       <h2>Verification Code</h2>
+  //       <p>Your OTP code is:</p>
+  //       <h1 style="color: #802e38ff;">${otp}</h1>
+  //       <p>This code will expire in 5 minutes.</p>
+  //     </div>
+  //   `,
+  // };
+  /* ------- END -------- */
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: " + info.response);
+    /* ------- START -------- */
+    // const info = await transporter.sendMail(mailOptions);
+    // console.log("Email sent: " + info.response);
+    /* ------- END -------- */
     return otp; // Return the OTP so you can store it temporarily (e.g. in DB or cache)
   } catch (error) {
     console.error("Error sending email:", error);

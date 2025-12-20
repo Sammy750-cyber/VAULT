@@ -87,9 +87,10 @@
         <button id="closeForm" class="absolute top-3 right-3 text-gray-400 hover:text-gray-700 dark:hover:text-white transition">
           <i class="fa fa-close fa-lg"></i>
         </button>
-        <form id="vaultFormElement" method="POST" class="space-y-4">
-          <input type="hidden" name="_method" value="PUT" />
-          <input type="hidden" name="id" id="vaultId" />
+        <form id="vaultFormElement" action="/vault/add" method="POST" class="space-y-4">
+          <!-- commented to resolve req_method being posted to the database -->
+          <!-- <input type="hidden" name="_method" value="PUT" /> -->
+          <!-- <input type="hidden" name="id" id="vaultId" /> -->
           <input type="text" name="service" placeholder="Service (e.g., Gmail)" required class="w-full border border-gray-300 dark:border-gray-600 bg-transparent p-2 rounded focus:ring-2 focus:ring-blue-500" />
           <input type="text" name="username" placeholder="Username" required class="w-full border border-gray-300 dark:border-gray-600 bg-transparent p-2 rounded focus:ring-2 focus:ring-blue-500" />
           <input type="text" name="password" placeholder="Password" required class="w-full border border-gray-300 dark:border-gray-600 bg-transparent p-2 rounded focus:ring-2 focus:ring-blue-500" />
@@ -113,8 +114,8 @@
 
       toggleForm.onclick = () => {
         vaultForm.classList.remove("hidden");
-        vaultFormElement.action = "/vault/add";
-        vaultFormElement.querySelector("input[name='_method']").value = "POST";
+        vaultFormElement.action = "/vault/add?_method=POST";
+        // vaultFormElement.querySelector("input[name='_method']").value = "POST";
         vaultFormElement.reset();
       };
 
@@ -140,10 +141,10 @@
       document.querySelectorAll(".edit-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
           const id = btn.dataset.id;
-          document.getElementById("vaultId").value = id;
+          // document.getElementById("vaultId").value = id;
           vaultFormElement.action = `/vault/${id}?_method=PUT`;
-          vaultFormElement.querySelector("input[name='_method']").value = "PUT";
-          vaultFormElement.querySelector("[name='service']").value = btn.dataset.service;
+          // vaultFormElement.querySelector("input[name='_method']").value = "PUT";
+          vaultFormElement.querySelector("[name='service']").value = btn.dataset.service; 
           vaultFormElement.querySelector("[name='username']").value = btn.dataset.username;
           vaultFormElement.querySelector("[name='password']").value = btn.dataset.password;
           vaultFormElement.querySelector("[name='note']").value = btn.dataset.note;

@@ -91,3 +91,6 @@ export async function delete_credentials(req, res) {
     res.status(500).json({ message: "Server error" });
   }
 }
+
+
+// Additonal features - this is just prototype

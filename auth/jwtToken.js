@@ -4,7 +4,7 @@ dotenv.config();
 
 export default async function createAccessToken(user) {
   return jwt.sign(
-    { username: user.username },
+    { id: user.id },
     process.env.ACCESS_TOKEN_SECRET,
     {
       expiresIn: "1h",

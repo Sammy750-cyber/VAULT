@@ -1,6 +1,6 @@
 # Node.js Vault Application
 
-This project is a secure vault application built with Node.js and Express. It allows users to authenticate using username/password and OTP, then manage encrypted credentials (service, username, password, note) stored in a JSON file. The app uses JWT for authentication, EJS for templating, and includes security features like rate limiting and token verification.
+This project is a secure vault application built with Node.js and Express. It allows users to authenticate using username/password and OTP, then manage encrypted credentials. The app uses JWT for authentication, EJS for templating, and includes security features like rate limiting and token verification.
 
 ## Features
 
@@ -28,8 +28,8 @@ This project is a secure vault application built with Node.js and Express. It al
 1. **Clone the repository**
 
 ```bash
-git clone <repository-url>
-cd <repository-folder>
+git clone https://github.com/sammy750-cyber/VAULT
+cd  VAULT
 ```
 
 2. **Install dependencies**
@@ -44,12 +44,11 @@ npm install
 
 Create a `.env` file in the root directory with the following content:
 
-```
-PORT=3000
-JWT_SECRET=your_jwt_secret_key
+```bash
+cp .env.example .env
 ```
 
-Replace `your_jwt_secret_key` with a secure secret string.
+Configure `.env` file properly
 
 4. **Run the application**
 
@@ -59,24 +58,16 @@ To start the server:
 npm start
 ```
 
-The server will start on the port specified in `.env` (default 3000).
+The server will start on the port specified in `.env` (default 40404).
 
 5. **Access the application**
 
 Open your browser and navigate to:
 
 ```
-http://localhost:3000/auth/login
+http://localhost:4040/auth/login
 ```
 
-6. **Login credentials**
-
-The app currently has a hardcoded user:
-
-- Username: `sam`
-- Password: (the password you set or the one in the code)
-
-After login, you will receive an OTP in the server console (for development). Enter the OTP to access the vault.
 
 ## Project Structure
 
@@ -95,7 +86,6 @@ After login, you will receive an OTP in the server console (for development). En
 - This project is a learning/demo project and not production-ready.
 - Passwords and OTPs are handled simply for demonstration.
 - Encryption keys and JWT secrets should be managed securely in production.
-- The vault data is stored in a JSON file; consider using a database for production.
 
 ## License
 

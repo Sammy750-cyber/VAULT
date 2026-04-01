@@ -3,11 +3,10 @@ import dotenv from "dotenv";
 import fs from "fs";
 import { verifyToken } from "../middleware/verifyToken.js";
 import { decrypt } from "../utils/encryption.js";
-import createAccessToken from "../auth/jwtToken.js";
-import sendOTPEmail from "../utils/send_otp_to_mail.js";
-import bcrypt from "bcrypt";
 import authLimiter from "../middleware/rateLimiter.js";
 import cookieParser from "cookie-parser";
+import { login, register, verifyOTP } from "../controllers/auth.controller.js";
+import pool from "../model/db.js";
 dotenv.config();
 
 const authRouter = express.Router();
@@ -15,131 +14,81 @@ const authRouter = express.Router();
 authRouter.use(express.urlencoded({ extended: true }));
 authRouter.use(cookieParser());
 
-const users = [
-  {
-    username: process.env.USERNAME_,
-    email: process.env.EMAIL_TO ,
-    password: process.env.PASSWORD_, // hashed password
-  },
-];
-
-// OTP sessions per login request
-const otpSessions = new Map();
-
 // vault file path
 const vaultfile = "./data/vault.json";
 
 authRouter.get("/", verifyToken, async (req, res) => {
-  const user = req.user;
-
-  if (!user) {
-    // return res.status(403).json({ message: "Unauthorized" });
-    return res.redirect("/auth/login")
-  }
-
-  const name= user.username
-  let vault = JSON.parse(fs.readFileSync(vaultfile, "utf-8"));
-  if (!vault || vault.length === 0) {
-    // if no vault entries are found, render the index page with an empty array
-    
-    return res.render("index", { items:[],message: `Welcome back, ${name.charAt(0).toUpperCase() + name.slice(1)}` });
-    
-  }
   try {
-    const items = await Promise.all(
-      vault.map(async (entry) => ({
-        id: entry.id,
-        createdAT: entry.createdAT,
-        updatedAT: entry.updatedAT,
-        service: await decrypt(entry.service),
-        username: await decrypt(entry.username),
-        password: await decrypt(entry.password),
-        note: await decrypt(entry.note),
-      }))
-    );
-    if (items.length === 0) {
-      // if no items are found, render the index page with an empty array
-      return res.render("index", { items: [] });
-    }
-    // Render the index page with decrypted items
-    res.cookie("username", user.username, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false, // true in production
-    });
-    // why is it saying decryption error? - Cookie clashing
-    // Render the index page with decrypted items
-    res.render("index", { items,message: `Welcome back, ${name.charAt(0).toUpperCase() + name.slice(1)}` });
+    const user = req.user;
 
+    if (!user) {
+      // return res.status(403).json({ message: "Unauthorized" });
+      return res.redirect("/auth/login");
+    }
+
+    const userId = user.id;
+    const [user_info] = await pool.query("SELECT * FROM users WHERE id = ?", [
+      userId,
+    ]);
+    const [user_main] = user_info;
+    const name = user_main.username;
+    let [vault_data] = await pool.query(
+      "SELECT * FROM vault WHERE user_id = ?",
+      [user.id],
+    );
+
+    if (!vault_data || vault_data.length === 0) {
+      // if no vault entries are found, render the index page with an empty array
+
+      return res.render("index", {
+        items: [],
+        message: `Welcome back, ${name.charAt(0).toUpperCase() + name.slice(1)}`,
+      });
+    }
+    // console.log("vault data:", vault_data) for debugging
+    try {
+      const items = await Promise.all(
+        vault_data.map(async (entry) => ({
+          id: entry.id,
+          createdAT: entry.createdAT,
+          updatedAT: entry.updatedAT,
+          service: await decrypt(entry.service),
+          username: await decrypt(entry.username_or_email),
+          password: await decrypt(entry.password),
+          note: await decrypt(entry.note),
+        })),
+      );
+      if (items.length === 0) {
+        // if no items are found, render the index page with an empty array
+        return res.render("index", { items: [] });
+      }
+      // Render the index page with decrypted items
+      res.cookie("user_id", user.id, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false, // true in production
+      });
+      // why is it saying decryption error? - Cookie clashing
+      // Render the index page with decrypted items
+      res.render("index", {
+        items,
+        message: `Welcome back, ${name.charAt(0).toUpperCase() + name.slice(1)}`,
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Decryption error", error });
+    }
   } catch (error) {
-    res.status(500).json({ message: "Decryption error", error });
+    next(error);
   }
 });
+
+authRouter.post("/auth/register", authLimiter, register);
 
 // login route
-authRouter.post("/auth/login", authLimiter, async (req, res) => {
-  const { username, password } = req.body;
-  const user = users.find(
-    (u) => u.username.toLowerCase() === username.toLowerCase()
-  );
-  if (!user) {
-    // render the login page with an error
-    return res.render("login", { error: "Invalid credentials" });
-  }
-
-  const valid = await bcrypt.compare(password, user.password);
-  if (!valid) {
-    // render the login page with an error
-    return res.render("login", { error: "Invalid credentials" });
-  }
-
-  const otp = await sendOTPEmail(user.email);
-  console.log(otp)
-  // handle error for otp
-
-  otpSessions.set(username, { otp, timestamp: Date.now() });
-  // Set a cookie with the username for later verification
-  // This is for the OTP verification step
-  res.cookie("username", username, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: false, // true in production
-  });
-  res.redirect("/auth/otp");
-});
+authRouter.post("/auth/login", authLimiter, login);
 
 // OTP verification
-authRouter.post("/auth/verify", authLimiter, async (req, res) => {
-  const { otp } = req.body;
-  const username = req.cookies.username;
-  const session = otpSessions.get(username);
-
-  if (!session) {
-    // render the OTP page with an error
-    return res.render("otp", {
-      error: "Session expired or invalid. Please try again.",
-    });
-  }
-
-  if (parseInt(otp) !== parseInt(session.otp)) {
-    // render the OTP page with an error
-    return res.render("otp", { error: "Invalid OTP. Please try again." });
-  }
-
-  try {
-    const AccessToken = await createAccessToken({ username });
-    otpSessions.delete(username);
-
-    res.cookie("token", AccessToken, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false, // true in production
-    });
-    res.redirect("/");
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
+authRouter.post("/auth/verify", authLimiter, verifyOTP);
 
 // GET REQUESTS
 

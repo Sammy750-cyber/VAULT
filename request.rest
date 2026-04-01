@@ -1,3 +1,33 @@
+
+POST http://localhost:4040/auth/register
+Content-Type: application/json
+
+{
+    "email": "sam@gmail.com",
+    "password": "password123"
+}
+
+###
+
+POST http://localhost:4040/auth/register
+Content-Type: application/json
+
+{
+    "email": "veronica@gmail.com",
+    "password": "password123"
+}
+
+###
+POST http://localhost:4040/auth/login
+Content-Type: application/json
+
+{
+    "email":"sam@gmail.com",
+    "password": "password123"
+}
+
+####
+
 POST http://localhost:4040/login
 Content-Type: application/json
 
@@ -7,15 +37,15 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:4040/auth/otp
+POST http://localhost:4040/auth/verify
 Content-Type: application/json
 
 {   
-    "username":"sammy",
-    "otp":"770553"
+    "username":"sam",
+    "otp":"525259"
 }
 
-###
+### 
 GET http://localhost:4040/
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNhbSIsImlhdCI6MTc1MTM3ODY1OCwiZXhwIjoxNzUxMzc5MjU4fQ.i1296-LT7vURVGHCNJLOSdng8XAZhpt38SlIB5txEx4
